@@ -65,6 +65,7 @@ void write_cmd_LCD12864(unsigned char cmdcode) {
 }
 
 void write_on_ram(unsigned char data) {
+    busy_check();
     digitalWrite(LCD_RS, 1);
     digitalWrite(LCD_RW, 0);
     digitalWrite(LCD_EN, 1);
@@ -99,14 +100,14 @@ void set_gdram_address(unsigned char x, unsigned char y) {
 }
 
 void clear_graphic_mem() {
-    set_graphic_on(0);
     unsigned char col=0, row=0;
     for (row = 0; row < 32; row++) {
+	set_graphic_on(0);
 	set_gdram_address(row, 0x0);
 	for (col = 0; col < 16; col++) {
 	    write_on_ram(0x0);
 	    write_on_ram(0x0);
 	}
+	set_graphic_on(1);
     }
-    set_graphic_on(1);
 }
