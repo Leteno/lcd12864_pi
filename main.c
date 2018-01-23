@@ -1,18 +1,32 @@
 #include "lcd12864_util.h"
+#include "graphic.h"
+#include "stdio.h"
+  #include <wiringPi.h>
 
 int main(int argc, char** argv) {
+    printf("init_env\n");
     init_env();
+    printf("clear_graphic_mem\n");
     clear_graphic_mem();
-    set_graphic_on(0);
-    set_gdram_address(0x1, 0x0);
-    write_on_ram(0xFF);
-    write_on_ram(0x00);
-    write_on_ram(0xFF);
-    write_on_ram(0x00);
-    write_on_ram(0xFF);
-    write_on_ram(0xFF);
-    write_on_ram(0xFF);
-    write_on_ram(0xFF);
-    set_graphic_on(1);
+    printf("canvas_init\n");
+    struct canvas panel;
+    canvas_init(&panel);
+
+    printf("canvas width %d height %d bitwise %d\n", panel.width, panel.height, panel.bitwise);
+
+    printf("set_pixel\n");
+
+    int i, j = 125;
+    for (j = 0; j < 64; j++) {
+	for (i = 0; i < 128; i++) {
+	    set_pixel(&panel, i, j, i > j);
+	}
+    }
+
+    printf("draw_canvas\n");
+    draw_canvas(panel);
+
+    printf("canvas_free\n");
+    canvas_free(&panel);
     return 0;
 }
