@@ -3,6 +3,7 @@
 
 #include "graphic.h"
 #include "lcd12864_util.h"
+#include "font/ascii.h"
 
 #define CANVAS_WIDTH 128
 #define CANVAS_HEIGHT 64
@@ -38,6 +39,52 @@ void set_pixel(struct canvas *panel, int x, int y, int on) {
     }
 }
 
+void draw_ascii(struct canvas *panel, unsigned char ascii, int x, int y) {
+    if (x >= panel->width || y >= panel->height) {
+	return;
+    }
+    unsigned char* data = ascii_init_dot_matrix_buffer();
+    int row = getDotMatrixOfAscii(ascii, data), r;
+    for (r = 0; r < row; r++) {
+	printf("%x ", data[r]);
+    }
+    printf("\n");
+    int start_index = x % panel->bitwise;
+    int position, nextPosition;
+    int col_in_row = panel->width / panel->bitwise;
+    for (r = 0; y < panel->height && r < row; y++, r++) {
+	position = col_in_row * y + x / panel->bitwise;
+	printf("map[%d] = %d\n", position, panel->map[position]);
+	unsigned char source1 = data[r] >> start_index;
+	unsigned char mask1 = 0XFF << (panel->bitwise - start_index);
+	panel->map[position] &= mask1;
+	panel->map[position] |= source1;
+	printf("map[%d] = %d\n", position, panel->map[position]);
+	nextPosition = position + 1;
+	if (!(nextPosition % col_in_row)) continue; // out of bound
+	unsigned char source2 = data[r] << (panel->bitwise - start_index);
+	unsigned char mask2 = 0xFF >> start_index;
+	printf("map[%d] = %d\n", nextPosition, panel->map[nextPosition]);
+	panel->map[nextPosition] &= mask2;
+	panel->map[nextPosition] |= source2;
+	printf("map[%d] = %d\n", nextPosition, panel->map[nextPosition]);
+    }
+    
+    if (data) {
+	free(data);
+    }
+}
+
+void draw_word(struct canvas *panel, unsigned char* ascii_word, int x, int y) {
+    int foot = 8;
+    char* p = ascii_word;
+    while (*p) {
+	draw_ascii(panel, *p, x, y);
+	x += foot;
+	p++;
+    }
+}
+
 /**
 
  in lcd12864:
@@ -65,4 +112,3 @@ void draw_canvas(struct canvas panel) {
 	set_graphic_on(1);
     }
 }
-

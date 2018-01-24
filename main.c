@@ -16,12 +16,7 @@ int main(int argc, char** argv) {
 
     printf("set_pixel\n");
 
-    int i, j = 125;
-    for (j = 0; j < 64; j++) {
-	for (i = 0; i < 128; i++) {
-	    set_pixel(&panel, i, j, i > j);
-	}
-    }
+    draw_word(&panel, "]^_` Hello world", 0, 0);
 
     printf("draw_canvas\n");
     draw_canvas(panel);
