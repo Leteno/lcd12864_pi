@@ -1,7 +1,6 @@
 #include "lcd12864_util.h"
 #include "graphic/graphic.h"
 #include "stdio.h"
-  #include <wiringPi.h>
 
 int main(int argc, char** argv) {
     printf("init_env\n");
