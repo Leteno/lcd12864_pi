@@ -15,7 +15,8 @@ int main(int argc, char** argv) {
 
     printf("set_pixel\n");
 
-    draw_word(&panel, "]^_` Hello world", 0, 0);
+    //draw_word(&panel, "]^_` Hello world", 0, 0);
+    draw_sprite_test(&panel);
 
     printf("draw_canvas\n");
     draw_canvas(panel);
