@@ -19,12 +19,12 @@ void canvas_init(struct canvas *panel) {
     printf("map_size: %d\n", map_size);
     int i;
     for (i = 0; i < map_size; i++) {
-	panel->map[i] = 0xFF;
+	panel->map[i] = 0x0;
     }
 }
 
 void canvas_free(struct canvas *panel) {
-    if (*(panel->map))
+    if (panel->map)
 	free(panel->map);
 }
 
@@ -191,8 +191,14 @@ void draw_sprite_test(struct canvas* panel) {
     int row = getDotMatrixOfAscii('A', s.data);
     s.width = 8; // buggy
     s.height = row;
-    draw_sprite(panel, s, 0, 0);
+//    draw_sprite(panel, s, 0, 0);
     if(s.data) {
+	free(s.data);
+    }
+
+    generateLiu(&s);
+    draw_sprite(panel, s, 45, -4);
+    if (s.data) {
 	free(s.data);
     }
 }

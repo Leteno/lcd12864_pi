@@ -34,7 +34,7 @@ public class G {
 		int red = (color & 0xFF0000) >> 4;
 		int green = (color & 0xFF00) >> 2;
 		int blue = color & 0xFF;
-		if (red + green + blue < 255 * 3 / 2) { // white 255 * 3 black 0 * 3
+		if (red + green + blue < 255) { // white 255 * 3 black 0 * 3
 		    result[index] |= 0x1 << (byteSize - 1 - bitIndex);
 		}
 		bitIndex++;

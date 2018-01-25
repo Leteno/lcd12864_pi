@@ -7,4 +7,6 @@ struct sprite {
     unsigned char *data;
 };
 
+void generateLiu(struct sprite* s);
+
 #endif
