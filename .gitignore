@@ -1,5 +1,6 @@
 *.o
 *.out
+*.class
 *~
 out
 build
