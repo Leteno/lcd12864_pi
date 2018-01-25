@@ -1,5 +1,5 @@
 #include "lcd12864_util.h"
-#include "graphic.h"
+#include "graphic/graphic.h"
 #include "stdio.h"
   #include <wiringPi.h>
 

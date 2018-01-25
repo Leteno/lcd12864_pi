@@ -2,8 +2,9 @@
 #include <stdio.h>
 
 #include "graphic.h"
-#include "lcd12864_util.h"
-#include "font/ascii.h"
+#include "../lcd12864_util.h"
+#include "../font/ascii.h"
+
 
 #define CANVAS_WIDTH 128
 #define CANVAS_HEIGHT 64
