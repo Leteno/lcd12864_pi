@@ -197,7 +197,7 @@ void draw_sprite_test(struct canvas* panel) {
     }
 
     generateLiu(&s);
-    draw_sprite(panel, s, 45, -4);
+    draw_sprite(panel, s, 0, 0);
     if (s.data) {
 	free(s.data);
     }

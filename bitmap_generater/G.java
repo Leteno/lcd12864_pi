@@ -23,8 +23,9 @@ public class G {
 	}
 	int index = 0;
 	int bitIndex = 0; // from left
-	for (int xPixel = 0, i = 0; xPixel < image.getWidth(); xPixel++) {
-	    for (int yPixel = 0; yPixel < image.getHeight(); yPixel++) {
+
+	for (int yPixel = 0; yPixel < image.getHeight(); yPixel++) {
+	    for (int xPixel = 0, i = 0; xPixel < image.getWidth(); xPixel++) {
 		if (bitIndex >= byteSize) {
 		    bitIndex %= byteSize;
 		    index++;
@@ -34,7 +35,7 @@ public class G {
 		int red = (color & 0xFF0000) >> 4;
 		int green = (color & 0xFF00) >> 2;
 		int blue = color & 0xFF;
-		if (red + green + blue < 255) { // white 255 * 3 black 0 * 3
+		if (red > 175 && green > 175 && blue > 175) { // white 255 * 3 black 0 * 3
 		    result[index] |= 0x1 << (byteSize - 1 - bitIndex);
 		}
 		bitIndex++;
