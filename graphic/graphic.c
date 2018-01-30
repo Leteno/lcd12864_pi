@@ -5,7 +5,6 @@
 #include "../hardware/lcd12864_util.h"
 #include "../font/ascii.h"
 
-
 #define CANVAS_WIDTH 128
 #define CANVAS_HEIGHT 64
 
@@ -16,7 +15,9 @@ void canvas_init(struct canvas *panel) {
     panel->bitwise = sizeof(unsigned char) * 8;
     int map_size = panel->width * panel->height / panel->bitwise;
     panel->map = (unsigned char *)malloc(map_size * sizeof(char));
+#if DEBUG
     printf("map_size: %d\n", map_size);
+#endif
     int i;
     for (i = 0; i < map_size; i++) {
 	panel->map[i] = 0x0;
@@ -46,29 +47,39 @@ void draw_ascii(struct canvas panel, unsigned char ascii, int x, int y) {
     }
     unsigned char* data = ascii_init_dot_matrix_buffer();
     int row = getDotMatrixOfAscii(ascii, data), r;
+#if DEBUG
     for (r = 0; r < row; r++) {
 	printf("%x ", data[r]);
     }
     printf("\n");
+#endif
     int start_index = x % panel.bitwise;
     int position, nextPosition;
     int col_in_row = panel.width / panel.bitwise;
     for (r = 0; y < panel.height && r < row; y++, r++) {
 	position = col_in_row * y + x / panel.bitwise;
+#if DEBUG
 	printf("map[%d] = %d\n", position, panel.map[position]);
+#endif
 	unsigned char source1 = data[r] >> start_index;
 	unsigned char mask1 = 0XFF << (panel.bitwise - start_index);
 	panel.map[position] &= mask1;
 	panel.map[position] |= source1;
+#if DEBUG
 	printf("map[%d] = %d\n", position, panel.map[position]);
+#endif
 	nextPosition = position + 1;
 	if (!(nextPosition % col_in_row)) continue; // out of bound
 	unsigned char source2 = data[r] << (panel.bitwise - start_index);
 	unsigned char mask2 = 0xFF >> start_index;
+#if DEBUG
 	printf("map[%d] = %d\n", nextPosition, panel.map[nextPosition]);
+#endif
 	panel.map[nextPosition] &= mask2;
 	panel.map[nextPosition] |= source2;
+#if DEBUG
 	printf("map[%d] = %d\n", nextPosition, panel.map[nextPosition]);
+#endif
     }
     
     if (data) {
@@ -144,7 +155,9 @@ void mem_copy(unsigned char* source, unsigned char* target, int sourceStartBit, 
 	    targetStartBit %= 8;
 	    target++;
 	}
+#if DEBUG
 	printf("source: %X bit: %d, target: %X bit: %d\n", *source, sourceStartBit, *target, targetStartBit);
+#endif
 
 	*target &= clear_at_position(targetStartBit); // reset at first
 	if (*source & only_at_position(sourceStartBit)) {
@@ -172,10 +185,12 @@ void draw_sprite(struct canvas panel, struct sprite s, int x, int y) { // TODO: 
     if (panel.width - x < s.width) {
 	copyBitLen = panel.width - x;
     }
+#if DEBUG
     int r;
     for (r = 0; r < 7; r++) {
 	printf("%x ", s.data[r]);
     }
+#endif
     for (h = 0; h < s.height; h++, y++) {
 	if (y >= panel.height) break;
 	target_position = col_in_row * y + x / panel.bitwise;

@@ -2,6 +2,8 @@
 #include "graphic/graphic.h"
 #include "stdio.h"
 
+#include "config/config.h"
+
 int main(int argc, char** argv) {
     printf("init_env\n");
     init_env();
