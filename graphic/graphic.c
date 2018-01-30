@@ -28,20 +28,20 @@ void canvas_free(struct canvas *panel) {
 	free(panel->map);
 }
 
-void set_pixel(struct canvas *panel, int x, int y, int on) {
-    if (x >= panel->width) x = panel->width - 1;
-    if (y >= panel->height) y = panel->height - 1;
-    int position = panel->width / panel->bitwise * y + x / panel->bitwise; // frankly speaking, this is wrong when x > 64
-    unsigned char position_in_char = 128 >> (x % panel->bitwise);
+void set_pixel(struct canvas panel, int x, int y, int on) {
+    if (x >= panel.width) x = panel.width - 1;
+    if (y >= panel.height) y = panel.height - 1;
+    int position = panel.width / panel.bitwise * y + x / panel.bitwise; // frankly speaking, this is wrong when x > 64
+    unsigned char position_in_char = 128 >> (x % panel.bitwise);
     if (on > 0) {
-	panel->map[position] |= position_in_char; // TODO make it clear
+	panel.map[position] |= position_in_char; // TODO make it clear
     } else {
-	panel->map[position] &= !position_in_char; // TODO make it clear
+	panel.map[position] &= !position_in_char; // TODO make it clear
     }
 }
 
-void draw_ascii(struct canvas *panel, unsigned char ascii, int x, int y) {
-    if (x >= panel->width || y >= panel->height) {
+void draw_ascii(struct canvas panel, unsigned char ascii, int x, int y) {
+    if (x >= panel.width || y >= panel.height) {
 	return;
     }
     unsigned char* data = ascii_init_dot_matrix_buffer();
@@ -50,25 +50,25 @@ void draw_ascii(struct canvas *panel, unsigned char ascii, int x, int y) {
 	printf("%x ", data[r]);
     }
     printf("\n");
-    int start_index = x % panel->bitwise;
+    int start_index = x % panel.bitwise;
     int position, nextPosition;
-    int col_in_row = panel->width / panel->bitwise;
-    for (r = 0; y < panel->height && r < row; y++, r++) {
-	position = col_in_row * y + x / panel->bitwise;
-	printf("map[%d] = %d\n", position, panel->map[position]);
+    int col_in_row = panel.width / panel.bitwise;
+    for (r = 0; y < panel.height && r < row; y++, r++) {
+	position = col_in_row * y + x / panel.bitwise;
+	printf("map[%d] = %d\n", position, panel.map[position]);
 	unsigned char source1 = data[r] >> start_index;
-	unsigned char mask1 = 0XFF << (panel->bitwise - start_index);
-	panel->map[position] &= mask1;
-	panel->map[position] |= source1;
-	printf("map[%d] = %d\n", position, panel->map[position]);
+	unsigned char mask1 = 0XFF << (panel.bitwise - start_index);
+	panel.map[position] &= mask1;
+	panel.map[position] |= source1;
+	printf("map[%d] = %d\n", position, panel.map[position]);
 	nextPosition = position + 1;
 	if (!(nextPosition % col_in_row)) continue; // out of bound
-	unsigned char source2 = data[r] << (panel->bitwise - start_index);
+	unsigned char source2 = data[r] << (panel.bitwise - start_index);
 	unsigned char mask2 = 0xFF >> start_index;
-	printf("map[%d] = %d\n", nextPosition, panel->map[nextPosition]);
-	panel->map[nextPosition] &= mask2;
-	panel->map[nextPosition] |= source2;
-	printf("map[%d] = %d\n", nextPosition, panel->map[nextPosition]);
+	printf("map[%d] = %d\n", nextPosition, panel.map[nextPosition]);
+	panel.map[nextPosition] &= mask2;
+	panel.map[nextPosition] |= source2;
+	printf("map[%d] = %d\n", nextPosition, panel.map[nextPosition]);
     }
     
     if (data) {
@@ -76,7 +76,7 @@ void draw_ascii(struct canvas *panel, unsigned char ascii, int x, int y) {
     }
 }
 
-void draw_word(struct canvas *panel, unsigned char* ascii_word, int x, int y) {
+void draw_word(struct canvas panel, unsigned char* ascii_word, int x, int y) {
     int foot = 8;
     char* p = ascii_word;
     while (*p) {
@@ -157,35 +157,35 @@ void mem_copy(unsigned char* source, unsigned char* target, int sourceStartBit, 
     }
 }
 
-void draw_sprite(struct canvas *panel, struct sprite s, int x, int y) { // TODO: use canvas instead of canvas*
+void draw_sprite(struct canvas panel, struct sprite s, int x, int y) { // TODO: use canvas instead of canvas*
     int h;
     int bit_offset = 0;
-    unsigned char *target = panel->map;
+    unsigned char *target = panel.map;
     unsigned char *source = s.data;
     int target_position,
 	source_position,
 	source_start_index,
-	xMod8 = x % panel->bitwise,
-	col_in_row = panel->width / panel->bitwise,
-	target_start_index = x % panel->bitwise;
+	xMod8 = x % panel.bitwise,
+	col_in_row = panel.width / panel.bitwise,
+	target_start_index = x % panel.bitwise;
     int copyBitLen = s.width;
-    if (panel->width - x < s.width) {
-	copyBitLen = panel->width - x;
+    if (panel.width - x < s.width) {
+	copyBitLen = panel.width - x;
     }
     int r;
     for (r = 0; r < 7; r++) {
 	printf("%x ", s.data[r]);
     }
     for (h = 0; h < s.height; h++, y++) {
-	if (y >= panel->height) break;
-	target_position = col_in_row * y + x / panel->bitwise;
+	if (y >= panel.height) break;
+	target_position = col_in_row * y + x / panel.bitwise;
 	source_position = (s.width * h) / 8;
 	source_start_index = (s.width * h) % 8;
 	mem_copy(source+source_position, target+target_position, source_start_index, target_start_index, copyBitLen);
     }
 }
 
-void draw_sprite_test(struct canvas* panel) {
+void draw_sprite_test(struct canvas panel) {
     struct sprite s;
     s.data = ascii_init_dot_matrix_buffer();
     int row = getDotMatrixOfAscii('A', s.data);
