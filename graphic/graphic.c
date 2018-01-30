@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "graphic.h"
-#include "../lcd12864_util.h"
+#include "../hardware/lcd12864_util.h"
 #include "../font/ascii.h"
 
 
