@@ -1,5 +1,6 @@
 #include "hardware/lcd12864_util.h"
 #include "graphic/graphic.h"
+#include "graphic/matrix.h"
 #include "stdio.h"
 
 #include "config/config.h"
@@ -15,16 +16,16 @@ int main(int argc, char** argv) {
 
     printf("canvas width %d height %d bitwise %d\n", panel.width, panel.height, panel.bitwise);
 
-    printf("set_pixel\n");
-
+    printf("draw_sprite_test\n");
     draw_sprite_test(panel);
     draw_word(panel, "Bonjour", 73, 30);
     draw_word(panel, "Jiang", 83, 42);
-
-    printf("draw_canvas\n");
     draw_canvas(panel);
 
+    printf("matrix_test\n");
+    matrix_test(&panel);
+
     printf("canvas_free\n");
-    canvas_free(&panel);
+    canvas_free(panel);
     return 0;
 }

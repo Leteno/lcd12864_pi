@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "graphic.h"
 #include "../hardware/lcd12864_util.h"
@@ -24,12 +26,42 @@ void canvas_init(struct canvas *panel) {
     }
 }
 
-void canvas_free(struct canvas *panel) {
-    if (panel->map)
-	free(panel->map);
+void canvas_free(struct canvas panel) {
+    if (panel.map)
+	free(panel.map);
+}
+
+void clear_canvas(struct canvas panel) {
+    assert(panel.map);
+    int map_size = panel.width * panel.height / panel.bitwise;
+    int i;
+    for (i = 0; i < map_size; i++) {
+	panel.map[i] = 0x0;
+    }
+}
+
+void canvas_copy(struct canvas *source, struct canvas *target) {
+    assert(source);
+    assert(source->map);
+    assert(target);
+
+    target->width = source->width;
+    target->height = source->height;
+    target->bitwise = source->bitwise;
+
+    int map_size = target->width * target->height / target->bitwise;
+    if (!target->map) {
+	target->map = (unsigned char *)malloc(map_size * sizeof(char) + 1);
+	int i;
+	for (i = 0; i < map_size; i++) {
+	    target->map[i] = 0x0;
+	}
+    }
+    memcpy(target->map, source->map, map_size);
 }
 
 void set_pixel(struct canvas panel, int x, int y, int on) {
+    assert(panel.map);
     if (x >= panel.width) x = panel.width - 1;
     if (y >= panel.height) y = panel.height - 1;
     int position = panel.width / panel.bitwise * y + x / panel.bitwise; // frankly speaking, this is wrong when x > 64
@@ -42,6 +74,7 @@ void set_pixel(struct canvas panel, int x, int y, int on) {
 }
 
 void draw_ascii(struct canvas panel, unsigned char ascii, int x, int y) {
+    assert(panel.map);
     if (x >= panel.width || y >= panel.height) {
 	return;
     }
@@ -88,6 +121,7 @@ void draw_ascii(struct canvas panel, unsigned char ascii, int x, int y) {
 }
 
 void draw_word(struct canvas panel, unsigned char* ascii_word, int x, int y) {
+    assert(panel.map);
     int foot = 8;
     char* p = ascii_word;
     while (*p) {
@@ -145,6 +179,8 @@ unsigned char only_at_position(int startBit) {
 }
 
 void mem_copy(unsigned char* source, unsigned char* target, int sourceStartBit, int targetStartBit, int bitLen) {
+    assert(source);
+    assert(target);
     // bitlen is 128 at most, so it is ok to copy by bit
     while (bitLen > 0) {
 	if (sourceStartBit >= 8) {
@@ -170,7 +206,9 @@ void mem_copy(unsigned char* source, unsigned char* target, int sourceStartBit, 
     }
 }
 
-void draw_sprite(struct canvas panel, struct sprite s, int x, int y) { // TODO: use canvas instead of canvas*
+void draw_sprite(struct canvas panel, struct sprite s, int x, int y) {
+    assert(panel.map);
+    assert(s.data);
     int h;
     int bit_offset = 0;
     unsigned char *target = panel.map;
@@ -201,6 +239,7 @@ void draw_sprite(struct canvas panel, struct sprite s, int x, int y) { // TODO: 
 }
 
 void draw_sprite_test(struct canvas panel) {
+    assert(panel.map);
     struct sprite s;
     s.data = ascii_init_dot_matrix_buffer();
     int row = getDotMatrixOfAscii('A', s.data);
@@ -231,6 +270,7 @@ void draw_sprite_test(struct canvas panel) {
  */
 
 void draw_canvas(struct canvas panel) {
+    assert(panel.map);
     unsigned char col = 0, row = 0;
     unsigned char *data = panel.map;
     for (row = 0; row < 32; row++) {

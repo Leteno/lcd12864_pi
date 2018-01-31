@@ -10,7 +10,11 @@ struct canvas {
 
 void canvas_init(struct canvas *panel);
 
-void canvas_free(struct canvas *panel);
+void canvas_free(struct canvas panel);
+
+void clear_canvas(struct canvas panel);
+
+void canvas_copy(struct canvas *source, struct canvas *target);
 
 void set_pixel(struct canvas panel, int x, int y, int on);
 
