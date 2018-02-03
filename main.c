@@ -1,4 +1,5 @@
 #include "hardware/lcd12864_util.h"
+#include "hardware/switch_util.h"
 #include "graphic/graphic.h"
 #include "graphic/matrix.h"
 #include "stdio.h"
@@ -27,5 +28,8 @@ int main(int argc, char** argv) {
 
     printf("canvas_free\n");
     canvas_free(panel);
+
+    switch_util_setup();
+    switch_util_test();
     return 0;
 }

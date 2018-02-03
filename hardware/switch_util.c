@@ -40,7 +40,3 @@ void switch_util_test() {
 	}
     }
 }
-
-void main() {
-    switch_util_test();
-}
