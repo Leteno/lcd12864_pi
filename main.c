@@ -2,11 +2,43 @@
 #include "hardware/switch_util.h"
 #include "graphic/graphic.h"
 #include "graphic/matrix.h"
-#include "stdio.h"
+#include "game/cat/cat_main_frame.h"
+
+#include <stdio.h>
+#include <unistd.h>
 
 #include "config/config.h"
+void new_logic();
+void old_test();
 
 int main(int argc, char** argv) {
+
+    new_logic();
+    return 0;
+}
+
+void new_logic() {
+    init_env();
+    switch_util_setup();
+    clear_graphic_mem();
+    struct canvas panel;
+    canvas_init(&panel);
+
+    game_init();
+    for (;;) {
+	clear_canvas(panel);
+	// game/cat/cat_main_frame.h
+	game_on_press(getButton());
+	game_draw_frame(panel);
+	draw_canvas(panel);
+	sleep(1);
+    }
+    game_free();
+
+    canvas_free(panel);
+}
+
+void old_test() {
     printf("init_env\n");
     init_env();
     printf("clear_graphic_mem\n");
@@ -31,5 +63,4 @@ int main(int argc, char** argv) {
 
     switch_util_setup();
     switch_util_test();
-    return 0;
 }
