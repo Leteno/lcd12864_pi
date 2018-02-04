@@ -274,7 +274,7 @@ void draw_canvas(struct canvas panel) {
     unsigned char col = 0, row = 0;
     unsigned char *data = panel.map;
     for (row = 0; row < 32; row++) {
-	set_graphic_on(0);
+	set_graphic_on(1); // it should be 0 but I don't know why 0 causes the image flash every moment
 	set_gdram_address(row, 0x0);
 	for (col = 0; col < 16; col++) {
 	    write_on_ram(data[row * 16 + col]);
