@@ -1,4 +1,5 @@
 #include "cat_main_frame.h"
+#include "cat_welcome_frame.h"
 #include "../../hardware/switch_util.h"
 #include "../../graphic/sprite.h"
 
@@ -15,6 +16,8 @@ void game_init() {
     p_cat->x = 0;
     p_cat->y = 0;
     generateLiu(&(p_cat->cat_sprite));
+
+    init_welcome_frame();
 }
 
 void game_free() {
@@ -22,6 +25,7 @@ void game_free() {
 	free(p_cat);
 	// free sprite?
     }
+    free_welcome_frame();
 }
 
 void game_on_press(int btnType) {
@@ -34,5 +38,5 @@ void game_on_press(int btnType) {
 }
 
 void game_draw_frame(struct canvas panel) {
-    draw_sprite(panel, p_cat->cat_sprite, p_cat->x, p_cat->y);
+    draw_welcome_frame(panel);
 }
