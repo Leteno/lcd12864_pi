@@ -3,6 +3,7 @@
 
 #define ASCII_BEGIN 32
 #define ASCII_ROWS 7
+#define ASCII_WORD_WIDTH 8
 
 unsigned char const ASCII_FONT_TABLE[116][7] = {
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,},  // 0x20, Space
@@ -208,12 +209,11 @@ unsigned char const AsciiFont3[32][7] = {
     {0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f,},  // 0x7f, DEL
 };
 
-// just workaround to see the result
-unsigned char* ascii_init_dot_matrix_buffer() {
-    return (unsigned char*) malloc(ASCII_ROWS * sizeof(unsigned char));
-}
-
-int getDotMatrixOfAscii(unsigned char ascii, unsigned char *data) {
+struct word getAsciiWord(unsigned char ascii) {
+    struct word w;
+    w.row = ASCII_ROWS;
+    w.width = ASCII_WORD_WIDTH;
+    w.data = (unsigned char*) malloc(w.row * w.width / 8 + 1);
     const unsigned char *row;
     int index = ascii - ASCII_BEGIN;
     if (index > 32 + 32) {
@@ -223,10 +223,16 @@ int getDotMatrixOfAscii(unsigned char ascii, unsigned char *data) {
     } else {
 	row = AsciiFont1[index];
     }
-    char* p = data;
+    char* p = w.data;
     int i;
     for (i = 0; i < ASCII_ROWS; i++) {
-	data[i] = row[i];
+	// buggy, it assumes that ASCII_WORD_WIDTH = 8
+	p[i] = row[i];
     }
-    return ASCII_ROWS;
+    return w;
+}
+
+void freeWord(struct word w) {
+    if (w.data)
+	free(w.data);
 }

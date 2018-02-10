@@ -73,13 +73,14 @@ void set_pixel(struct canvas panel, int x, int y, int on) {
     }
 }
 
-void draw_ascii(struct canvas panel, unsigned char ascii, int x, int y) {
+int draw_ascii(struct canvas panel, unsigned char ascii, int x, int y) {
     assert(panel.map);
     if (x >= panel.width || y >= panel.height) {
-	return;
+	return 0;
     }
-    unsigned char* data = ascii_init_dot_matrix_buffer();
-    int row = getDotMatrixOfAscii(ascii, data), r;
+    struct word w = getAsciiWord(ascii);
+    unsigned char* data = w.data;
+    int row = w.row, width = w.width, r;
 #if DEBUG
     for (r = 0; r < row; r++) {
 	printf("%x ", data[r]);
@@ -103,6 +104,7 @@ void draw_ascii(struct canvas panel, unsigned char ascii, int x, int y) {
 #endif
 	nextPosition = position + 1;
 	if (!(nextPosition % col_in_row)) continue; // out of bound
+	// buggy actually, this assume that data width is 8
 	unsigned char source2 = data[r] << (panel.bitwise - start_index);
 	unsigned char mask2 = 0xFF >> start_index;
 #if DEBUG
@@ -114,19 +116,17 @@ void draw_ascii(struct canvas panel, unsigned char ascii, int x, int y) {
 	printf("map[%d] = %d\n", nextPosition, panel.map[nextPosition]);
 #endif
     }
-    
-    if (data) {
-	free(data);
-    }
+    freeWord(w);
+    return width;
 }
 
 void draw_word(struct canvas panel, unsigned char* ascii_word, int x, int y) {
     assert(panel.map);
-    int foot = 8;
     char* p = ascii_word;
     while (*p) {
-	draw_ascii(panel, *p, x, y);
-	x += foot;
+	int offset = draw_ascii(panel, *p, x, y);
+	assert(offset);
+	x += offset;
 	p++;
     }
 }
@@ -240,18 +240,18 @@ void draw_sprite(struct canvas panel, struct sprite s, int x, int y) {
 
 void draw_sprite_test(struct canvas panel) {
     assert(panel.map);
+
+    struct word w = getAsciiWord('A');
+    unsigned char* data = w.data;
     struct sprite s;
-    s.data = ascii_init_dot_matrix_buffer();
-    int row = getDotMatrixOfAscii('A', s.data);
-    s.width = 8; // buggy
-    s.height = row;
-//    draw_sprite(panel, s, 0, 0);
-    if(s.data) {
-	free(s.data);
-    }
+    s.data = w.data;
+    s.width = w.width;
+    s.height = w.row;
+    draw_sprite(panel, s, 0, 0);
+    freeWord(w);
 
     generateLiu(&s);
-    draw_sprite(panel, s, 0, 0);
+//    draw_sprite(panel, s, 0, 0);
     if (s.data) {
 	free(s.data);
     }
