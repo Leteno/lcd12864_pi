@@ -41,8 +41,11 @@ void new_logic() {
 	    game_draw_frame(panel);
 	    draw_canvas(panel);
 	    ftime(&tp);
-	    last_millitm = tp.millitm;
-	    last_time = tp.time;
+	    last_millitm = last_millitm + T;
+	    if (last_millitm >= 1000) {
+		last_millitm -= 1000;
+		last_time += 1;
+	    }
 	}
     }
     game_free();
