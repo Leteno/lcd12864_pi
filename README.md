@@ -3,7 +3,7 @@
 This is mainly for fun.
 
 What You can do:
-1. show Your Picture in LCD12864: you can generate the dot matrix by [G.java](bitmap_generater/G.java) and show it. Like this:
+1. show Your Picture in LCD12864: you can generate the dot matrix by [G.java](customize_tools/bitmap_generater/G.java) and show it. Like this:
 ![yinghuozhishen](res/amuse_jiangjia.jpeg)
 
 Wiring thing
