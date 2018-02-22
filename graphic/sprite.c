@@ -169,3 +169,8 @@ void generateLiu(struct sprite* s) {
     s->data = (unsigned char*) malloc(data_size *sizeof(unsigned char));
     memcpy(s->data, yinghuozhishen, data_size);
 }
+
+void sprite_free(struct sprite s) {
+    if (s.data)
+	free(s.data);
+}

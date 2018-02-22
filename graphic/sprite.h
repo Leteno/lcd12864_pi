@@ -9,4 +9,6 @@ struct sprite {
 
 void generateLiu(struct sprite* s);
 
+void sprite_free(struct sprite s);
+
 #endif

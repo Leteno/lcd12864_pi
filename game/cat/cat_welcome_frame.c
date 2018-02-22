@@ -1,6 +1,7 @@
 #include "cat_welcome_frame.h"
 #include "../../graphic/sprite.h"
 #include "../../graphic/graphic.h"
+#include "game_sprite.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -79,25 +80,38 @@ void init_welcome_frame() {
     int data_size = frame_sprite.width * frame_sprite.height / 8 + 1;
     frame_sprite.data = (unsigned char*) malloc(data_size);
     memcpy(frame_sprite.data, frame_sprite_matrix, data_size);
+
+    // temply add here
+    game_sprite_init();
 }
 
 void free_welcome_frame() {
     if (frame_sprite.data) {
 	free(frame_sprite.data);
     }
+    // temply add here
+    game_sprite_free();
 }
 
 int count = 0;
-int max_count = 5;
+int max_count = 10;
 int showing = 1;
+int planeX = 0;
+int planeY = 42;
 void draw_welcome_frame(struct canvas panel) {
     draw_sprite(panel, frame_sprite, 0, 0);
     draw_word(panel, "CATOR!GO!!GO!!", 4, 10);
     if (showing) {
 	draw_word(panel, "PRESS COIN", 16, 30);
     }
+    draw_plane(panel, planeX, planeY);
     if (count++ >= max_count) {
 	showing = !showing;
 	count = 0;
+
+	planeX++;
+	if (planeX > panel.width) {
+	    planeX = 0;
+	}
     }
 }
