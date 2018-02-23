@@ -1,4 +1,6 @@
 #include "cat_welcome_frame.h"
+#include "cat_main_frame.h"
+#include "../../hardware/switch_util.h"
 #include "../../graphic/sprite.h"
 #include "../../graphic/graphic.h"
 #include "game_sprite.h"
@@ -91,6 +93,13 @@ void free_welcome_frame() {
     }
     // temply add here
     game_sprite_free();
+}
+
+void welcome_frame_on_press(int btnType) {
+    if (BTN_A & btnType || BTN_B & btnType) {
+	// TODO add smooth response will be better
+	game_next_frame();
+    }
 }
 
 int count = 0;
