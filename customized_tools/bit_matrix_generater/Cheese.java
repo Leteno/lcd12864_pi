@@ -92,7 +92,7 @@ public class Cheese extends Panel {
 	boolean firstTime = true;
 	for (int ch : result) {
 	    if (!firstTime) buffer.append(", ");
-	    buffer.append(String.format("0x%X", ch));
+	    buffer.append(String.format("0x%02X", ch));
 	    if (++index % width == 0) {
 		index = 0;
 		buffer.append("\n");
