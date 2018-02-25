@@ -99,6 +99,19 @@ public class Cheese extends Panel {
 	    }
 	    firstTime = false;
 	}
+
+	firstTime = true;
+	buffer.append("reverse: \n");
+	for (int ch : result) {
+	    ch = ~ch & 0xFF;
+	    if (!firstTime) buffer.append(", ");
+	    buffer.append(String.format("0x%02X", ch));
+	    if (++index % width == 0) {
+		index = 0;
+		buffer.append("\n");
+	    }
+	    firstTime = false;
+	}
 	return buffer.toString();
     }
 

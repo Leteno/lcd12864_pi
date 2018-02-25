@@ -31,7 +31,7 @@ public class GUI extends Frame {
 	controller.setLayout(new GridLayout(6, 1));
 	downPanel.add(controller);
 
-	Button btn = new Button("don't press me");
+	Button btn = new Button("to matrix");
 	btn.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    textArea.setText(cheese.dump());
