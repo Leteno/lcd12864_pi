@@ -127,13 +127,7 @@ public class Cheese extends Panel {
 	    matrix[index++] = i;
 	    System.out.printf("0x%X\n", i);
 	}
-
-	int gridSize = cheeseSize * cheeseSize;
-	for (int i = 0; i < gridSize; i++) {
-	    B b = list.get(i);
-	    b.isSelected = false; // clear all
-	    b.repaint();
-	}
+	clearContent();
 
 	index = 0;
 	int bitIndex = 7;
@@ -150,6 +144,15 @@ public class Cheese extends Panel {
 		    bitIndex = 7;
 		}
 	    }
+	}
+    }
+
+    public void clearContent() {
+	int gridSize = cheeseSize * cheeseSize;
+	for (int i = 0; i < gridSize; i++) {
+	    B b = list.get(i);
+	    b.isSelected = false; // clear all
+	    b.repaint();
 	}
     }
 

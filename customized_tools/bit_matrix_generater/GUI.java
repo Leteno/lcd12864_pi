@@ -3,7 +3,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class GUI extends Frame implements ActionListener {
+public class GUI extends Frame {
 
     private Cheese cheese;
     private TextArea textArea;
@@ -28,11 +28,15 @@ public class GUI extends Frame implements ActionListener {
 	add(downPanel);
 
 	Panel controller = new Panel();
-	controller.setLayout(new GridLayout(5, 1));
+	controller.setLayout(new GridLayout(6, 1));
 	downPanel.add(controller);
 
 	Button btn = new Button("don't press me");
-	btn.addActionListener(this);
+	btn.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+		    textArea.setText(cheese.dump());
+		}
+	    });
 	controller.add(btn);
 
 	Button btn2 = new Button("recovery");
@@ -48,6 +52,15 @@ public class GUI extends Frame implements ActionListener {
 		}
 	    });
 	controller.add(btn2);
+
+	Button btn3 = new Button("Clear");
+	btn3.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+		    cheese.clearContent();
+		}
+	    });
+	controller.add(btn3);
+
 	controller.add(new Label("left, top"));
 	controller.add(new Label("width, height"));
 	controller.add(new Label("data"));
@@ -55,10 +68,6 @@ public class GUI extends Frame implements ActionListener {
 	textArea = new TextArea();
 	textArea.setSize(100, 100);
 	downPanel.add(textArea);
-    }
-
-    public void actionPerformed(ActionEvent e) {
-	textArea.setText(cheese.dump());
     }
 
     public static void main(String[] args) {
