@@ -40,6 +40,17 @@ void clear_canvas(struct canvas panel) {
     }
 }
 
+void print_canvas(struct canvas panel) {
+    int block_size = panel.width / panel.bitwise;
+    int col, row;
+    for (row = 0; row < panel.height; row++) {
+	for (col = 0; col < block_size; col++) {
+	    printf("%X ", panel.map[col + row * block_size]);
+	}
+	printf("\n");
+    }
+}
+
 void canvas_copy(struct canvas *source, struct canvas *target) {
     assert(source);
     assert(source->map);
@@ -78,45 +89,10 @@ int draw_ascii(struct canvas panel, unsigned char ascii, int x, int y) {
     if (x >= panel.width || y >= panel.height) {
 	return 0;
     }
-    struct word w = getAsciiWord(ascii);
-    unsigned char* data = w.data;
-    int row = w.row, width = w.width, r;
-#if DEBUG
-    for (r = 0; r < row; r++) {
-	printf("%x ", data[r]);
-    }
-    printf("\n");
-#endif
-    int start_index = x % panel.bitwise;
-    int position, nextPosition;
-    int col_in_row = panel.width / panel.bitwise;
-    for (r = 0; y < panel.height && r < row; y++, r++) {
-	position = col_in_row * y + x / panel.bitwise;
-#if DEBUG
-	printf("map[%d] = %d\n", position, panel.map[position]);
-#endif
-	unsigned char source1 = data[r] >> start_index;
-	unsigned char mask1 = 0XFF << (panel.bitwise - start_index);
-	panel.map[position] &= mask1;
-	panel.map[position] |= source1;
-#if DEBUG
-	printf("map[%d] = %d\n", position, panel.map[position]);
-#endif
-	nextPosition = position + 1;
-	if (!(nextPosition % col_in_row)) continue; // out of bound
-	// buggy actually, this assume that data width is 8
-	unsigned char source2 = data[r] << (panel.bitwise - start_index);
-	unsigned char mask2 = 0xFF >> start_index;
-#if DEBUG
-	printf("map[%d] = %d\n", nextPosition, panel.map[nextPosition]);
-#endif
-	panel.map[nextPosition] &= mask2;
-	panel.map[nextPosition] |= source2;
-#if DEBUG
-	printf("map[%d] = %d\n", nextPosition, panel.map[nextPosition]);
-#endif
-    }
-    freeWord(w);
+    struct sprite w = getAsciiWord(ascii);
+    draw_sprite(panel, w, x, y);
+    int width = w.width;
+    sprite_free(w);
     return width;
 }
 
@@ -124,7 +100,7 @@ void draw_word(struct canvas panel, unsigned char* ascii_word, int x, int y) {
     assert(panel.map);
     char* p = ascii_word;
     while (*p) {
-	int offset = draw_ascii(panel, *p, x, y);
+	int offset = draw_ascii(panel, *p, x, y) + 1;
 	assert(offset);
 	x += offset;
 	p++;
@@ -178,7 +154,7 @@ unsigned char only_at_position(int startBit) {
     }
 }
 
-void mem_copy(unsigned char* source, unsigned char* target, int sourceStartBit, int targetStartBit, int bitLen) {
+void c_mem_copy(unsigned char* source, unsigned char* target, int sourceStartBit, int targetStartBit, int bitLen) {
     assert(source);
     assert(target);
     // bitlen is 128 at most, so it is ok to copy by bit
@@ -191,15 +167,15 @@ void mem_copy(unsigned char* source, unsigned char* target, int sourceStartBit, 
 	    targetStartBit %= 8;
 	    target++;
 	}
-#if DEBUG
-	printf("source: %X bit: %d, target: %X bit: %d\n", *source, sourceStartBit, *target, targetStartBit);
-#endif
 
 	*target &= clear_at_position(targetStartBit); // reset at first
 	if (*source & only_at_position(sourceStartBit)) {
 	    *target |= only_at_position(targetStartBit);
 	}
-	    
+
+#if DEBUG
+	printf("source: %X bit_position: %d, target: %X bit_position: %d\n", *source, sourceStartBit, *target, targetStartBit);
+#endif
 	sourceStartBit++;
 	targetStartBit++;
 	bitLen--;
@@ -234,27 +210,19 @@ void draw_sprite(struct canvas panel, struct sprite s, int x, int y) {
 	target_position = col_in_row * y + x / panel.bitwise;
 	source_position = (s.width * h) / 8;
 	source_start_index = (s.width * h) % 8;
-	mem_copy(source+source_position, target+target_position, source_start_index, target_start_index, copyBitLen);
+	c_mem_copy(source+source_position, target+target_position, source_start_index, target_start_index, copyBitLen);
     }
+#if DEBUG
+    print_canvas(panel);
+#endif
 }
 
 void draw_sprite_test(struct canvas panel) {
     assert(panel.map);
 
-    struct word w = getAsciiWord('A');
-    unsigned char* data = w.data;
-    struct sprite s;
-    s.data = w.data;
-    s.width = w.width;
-    s.height = w.row;
-    draw_sprite(panel, s, 0, 0);
-    freeWord(w);
-
-    generateLiu(&s);
-//    draw_sprite(panel, s, 0, 0);
-    if (s.data) {
-	free(s.data);
-    }
+    struct sprite w = getAsciiWord('A');
+    draw_sprite(panel, w, 0, 0);
+    sprite_free(w);
 }
 
 /**

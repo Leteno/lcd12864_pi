@@ -1,13 +1,7 @@
 #ifndef ASCII_H
 #define ASCII_H
+#include "../graphic/sprite.h"
 
-struct word {
-    int row;
-    int width;
-    unsigned char* data;
-};
-
-struct word getAsciiWord(unsigned char ascii);
-void freeWord(struct word w);
+struct sprite getAsciiWord(char ascii);
 
 #endif

@@ -7,6 +7,8 @@ cat_game_objects = game/cat/cat_main_frame.o game/cat/cat_welcome_frame.o game/c
 
 lcd_echo_objects = game/lcd_echo/lcd_echo.o
 
+font/ascii.o: font/font5x7.h font/font8x7.h
+
 cat: $(basic_objects) $(cat_game_objects)
 	$(CC) -o cat $(basic_objects) $(cat_game_objects) -lwiringPi
 
