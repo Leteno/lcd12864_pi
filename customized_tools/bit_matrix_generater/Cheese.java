@@ -3,15 +3,20 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import java.util.*;
+
 public class Cheese extends Panel {
 
     private int cheeseSize = 16;
+    private ArrayList<B> list = new ArrayList();
 
     public Cheese() {
 	this.setLayout(new GridLayout(cheeseSize, cheeseSize));
 	for (int row = 0; row < cheeseSize; row++) {
 	    for (int col = 0; col < cheeseSize; col++) {
-		this.add(new B(row, col));
+		B b = new B(row, col);
+		list.add(b);
+		this.add(b);
 	    }
 	}
     }
@@ -21,7 +26,7 @@ public class Cheese extends Panel {
 	int gridSize = cheeseSize * cheeseSize;
 	boolean[] output = new boolean[gridSize];
 	for (int i = 0; i < gridSize; i++) {
-	    B b = (B)getComponent(i);
+	    B b = list.get(i);
 	    output[i] = b.isSelected;
 	}
 	int left = 0, right = cheeseSize - 1,
@@ -80,20 +85,72 @@ public class Cheese extends Panel {
 	}
 	
 	StringBuffer buffer = new StringBuffer();
-	buffer.append(String.format("(%d, %d, %d, %d)\n", left, top, right, bottom));
-	buffer.append(String.format("(%d, %d)\n", width, height));
-	buffer.append("\n{\n");
+	buffer.append(String.format("%d, %d\n", left, top, right, bottom));
+	buffer.append(String.format("%d, %d\n", width, height));
 
 	index = 0;
+	boolean firstTime = true;
 	for (int ch : result) {
-	    buffer.append(String.format("0x%X,", ch));
+	    if (!firstTime) buffer.append(", ");
+	    buffer.append(String.format("0x%X", ch));
 	    if (++index % width == 0) {
 		index = 0;
 		buffer.append("\n");
 	    }
+	    firstTime = false;
 	}
-	buffer.append("\n}");
 	return buffer.toString();
+    }
+
+    public void recovery(String str) {
+	Scanner scanner = new Scanner(str);
+
+	String line1 = scanner.nextLine();
+	String[] line1S = line1.split(", ");
+	int left = Integer.parseInt(line1S[0]);
+	int top = Integer.parseInt(line1S[1]);
+	System.out.printf("left: %d, top: %d\n", left, top);
+
+	String line2 = scanner.nextLine();
+	String[] line2S = line2.split(", ");
+	int width = Integer.parseInt(line2S[0]);
+	int height = Integer.parseInt(line2S[1]);
+	System.out.printf("width: %d, height: %d\n", width, height);
+
+	int[] matrix = new int[width * height / 8 + 1];
+
+	String line3 = scanner.nextLine();
+	String[] line3S = line3.split(", ");
+	int index = 0;
+	for (String hex : line3S) {
+	    int i = Integer.decode(hex);
+	    matrix[index++] = i;
+	    System.out.printf("0x%X\n", i);
+	}
+
+	int gridSize = cheeseSize * cheeseSize;
+	for (int i = 0; i < gridSize; i++) {
+	    B b = list.get(i);
+	    b.isSelected = false; // clear all
+	    b.repaint();
+	}
+
+	index = 0;
+	int bitIndex = 7;
+	for (int j = top; j < top + height; j++) {
+	    for (int i = left; i < left + width; i++) {
+		B b = list.get(i + j * cheeseSize);
+		if (b.mCol != i || b.mRow != j) {
+		    System.out.printf("error: B(%d, %d) not (%d, %d)\n", b.mCol, b.mRow, i, j);
+		}
+		b.isSelected = (matrix[index] & (1 << bitIndex--)) > 0;
+		b.repaint();
+		if (bitIndex < 0) {
+		    index++;
+		    bitIndex = 7;
+		}
+	    }
+	}
     }
 
     public static class B extends Panel implements MouseListener {
