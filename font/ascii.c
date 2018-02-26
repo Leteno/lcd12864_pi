@@ -29,7 +29,6 @@ struct sprite getAsciiWord_8x7(char ascii) {
 
 struct sprite getAsciiWord_5x7(char ascii) {
 
-    printf("getWord: %c\n", ascii);
     // code before 0x20 is non-print-code
     assert(ascii >= 0x20 && ascii <= 0x7F);
 
@@ -41,7 +40,6 @@ struct sprite getAsciiWord_5x7(char ascii) {
     char* p = w.data;
     char* row = Font5x7;
     row += 5 * (ascii - 0x20);
-    //char target[] = { 0x74, 0x63, 0x1F, 0xC6, 0x20 }; //A
     int i, size_5x7 = 5;
     for (i = 0; i < size_5x7; i++) {
 	p[i] = row[i];
