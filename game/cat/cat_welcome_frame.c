@@ -3,13 +3,12 @@
 #include "../../hardware/switch_util.h"
 #include "../../graphic/sprite.h"
 #include "../../graphic/graphic.h"
-#include "game_sprite.h"
 #include "frame_128x64.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-struct sprite frame_sprite;
+struct sprite frame_border_sprite;
 struct welcome_frame_data data;
 void init_welcome_frame() {
 
@@ -28,22 +27,17 @@ void init_welcome_frame() {
     data.AnimationTime_before_EnterNextFrame = 8;
 
     // TODO shrink it with function
-    frame_sprite.width = 128;
-    frame_sprite.height = 64;
-    int data_size = frame_sprite.width * frame_sprite.height / 8 + 1;
-    frame_sprite.data = (unsigned char*) malloc(data_size);
-    memcpy(frame_sprite.data, frame_128x64_border1_matrix, data_size);
-
-    // temply add here
-    game_sprite_init();
+    frame_border_sprite.width = 128;
+    frame_border_sprite.height = 64;
+    int data_size = frame_border_sprite.width * frame_border_sprite.height / 8 + 1;
+    frame_border_sprite.data = (unsigned char*) malloc(data_size);
+    memcpy(frame_border_sprite.data, frame_128x64_border1_matrix, data_size);
 }
 
 void free_welcome_frame() {
-    if (frame_sprite.data) {
-	free(frame_sprite.data);
+    if (frame_border_sprite.data) {
+	free(frame_border_sprite.data);
     }
-    // temply add here
-    game_sprite_free();
 }
 
 void welcome_frame_on_press(int btnType) {
@@ -57,7 +51,7 @@ void welcome_frame_on_press(int btnType) {
 
 void draw_welcome_frame(struct canvas panel) {
     // White frame
-    draw_sprite(panel, frame_sprite, 0, 0);
+    draw_sprite(panel, frame_border_sprite, 0, 0);
 
     // Title animation
     if (data.title_currentTime < data.title_animationTime) {
@@ -97,14 +91,8 @@ void draw_welcome_frame(struct canvas panel) {
     if (data.show_PressCoin) {
 	draw_word(panel, "PRESS COIN", 20, 40);
     }
-    draw_plane(panel, data.planeX, data.planeY);
     if (data.PressCoin_CurrentTime++ >= data.PressCoin_TwinkleTime) {
 	data.show_PressCoin = !data.show_PressCoin;
 	data.PressCoin_CurrentTime = 0;
-
-	data.planeX++;
-	if (data.planeX > panel.width) {
-	    data.planeX = 0;
-	}
     }
 }
