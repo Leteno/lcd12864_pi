@@ -1,6 +1,6 @@
 #include "cat_game_frame.h"
-#include "../../hardware/switch_util.h"
-#include "../../graphic/graphic.h"
+#include "../../../hardware/switch_util.h"
+#include "../../../graphic/graphic.h"
 
 void game_frame_init() {
 }

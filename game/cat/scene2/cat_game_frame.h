@@ -1,7 +1,7 @@
 #ifndef CAT_GAME_FRAME_H
 #define CAT_GAME_FRAME_H
 
-#include "../../graphic/graphic.h"
+#include "../../../graphic/graphic.h"
 
 struct game_frame_data {
     

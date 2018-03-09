@@ -1,8 +1,8 @@
 #ifndef GAME_SPRITE_H
 #define GAME_SPRITE_H
 
-#include "../../graphic/sprite.h"
-#include "../../graphic/graphic.h"
+#include "../../../graphic/sprite.h"
+#include "../../../graphic/graphic.h"
 
 struct plane_sprite {
     struct sprite normal;

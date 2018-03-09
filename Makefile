@@ -3,7 +3,7 @@ CC = gcc -g
 
 basic_objects = hardware/lcd12864_util.o hardware/switch_util.o graphic/graphic.o graphic/canvas.o graphic/matrix.o graphic/sprite.o font/ascii.o
 
-cat_game_objects = game/cat/cat_main_frame.o game/cat/cat_welcome_frame.o game/cat/cat_game_frame.o game/cat/game_sprite.o main.o
+cat_game_objects = game/cat/cat_main_frame.o game/cat/scene1/cat_welcome_frame.o game/cat/scene2/cat_game_frame.o game/cat/scene2/game_sprite.o main.o
 
 lcd_echo_objects = game/lcd_echo/lcd_echo.o
 

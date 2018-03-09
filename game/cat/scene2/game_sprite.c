@@ -1,7 +1,7 @@
 #include "game_sprite.h"
 
-#include "../../graphic/sprite.h"
-#include "../../graphic/graphic.h"
+#include "../../../graphic/sprite.h"
+#include "../../../graphic/graphic.h"
 
 #include <string.h>
 #include <stdlib.h>

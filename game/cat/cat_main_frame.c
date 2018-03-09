@@ -1,6 +1,6 @@
 #include "cat_main_frame.h"
-#include "cat_welcome_frame.h"
-#include "cat_game_frame.h"
+#include "scene1/cat_welcome_frame.h"
+#include "scene2/cat_game_frame.h"
 #include "../../graphic/sprite.h"
 
 #include <stdlib.h>

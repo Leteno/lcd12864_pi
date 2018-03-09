@@ -1,7 +1,7 @@
 #ifndef CAT_WELCOME_FRAME_H
 #define CAT_WELCOME_FRAME_H
 
-#include "../../graphic/graphic.h"
+#include "../../../graphic/graphic.h"
 
 struct welcome_frame_data {
 

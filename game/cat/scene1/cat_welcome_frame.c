@@ -1,8 +1,8 @@
+#include "../cat_main_frame.h"
+#include "../../../hardware/switch_util.h"
+#include "../../../graphic/sprite.h"
+#include "../../../graphic/graphic.h"
 #include "cat_welcome_frame.h"
-#include "cat_main_frame.h"
-#include "../../hardware/switch_util.h"
-#include "../../graphic/sprite.h"
-#include "../../graphic/graphic.h"
 #include "frame_128x64.h"
 
 #include <stdlib.h>
