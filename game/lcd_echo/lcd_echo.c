@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
 
     for (int i = 1; i < argc; i++) {
 	if (i * 9 > panel.height) break;
+//	draw_word_with_bound(panel, argv[i], 0, i * 9, 100, 100, LEFT);
 	draw_word(panel, argv[i], 0, i * 9);
     }
     draw_canvas(panel);

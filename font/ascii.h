@@ -3,5 +3,6 @@
 #include "../graphic/sprite.h"
 
 struct sprite getAsciiWord(char ascii);
+struct sprite getDotDotDot();
 
 #endif

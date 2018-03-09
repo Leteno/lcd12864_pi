@@ -50,3 +50,15 @@ struct sprite getAsciiWord_5x7(char ascii) {
 struct sprite getAsciiWord(char ascii) {
     return getAsciiWord_5x7(ascii);
 }
+
+struct sprite getDotDotDot() {
+    struct sprite w;
+    w.width = 5;
+    w.height = 7;
+    w.data = (unsigned char*) malloc(w.height * w.width / 8 + 1);
+    int i;
+    for (i = 0; i < 5; i++) {
+	w.data[i] = dot_dot_dot[i];
+    }
+    return w;
+}

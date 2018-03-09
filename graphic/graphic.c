@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "graphic.h"
+#include "../utils/math_utils.h"
 #include "../hardware/lcd12864_util.h"
 #include "../font/ascii.h"
 
@@ -20,26 +21,50 @@ void set_pixel(struct canvas panel, int x, int y, int on) {
     }
 }
 
-int draw_ascii(struct canvas panel, unsigned char ascii, int x, int y) {
-    assert(panel.map);
-    if (x >= panel.width || y >= panel.height) {
-	return 0;
-    }
-    struct sprite w = getAsciiWord(ascii);
-    draw_sprite(panel, w, x, y);
-    int width = w.width;
-    sprite_free(w);
-    return width;
+void draw_word(struct canvas panel, unsigned char* ascii_word, int x, int y) {
+    draw_word_with_bound(panel, ascii_word, x, y, -1, -1, LEFT);
 }
 
-void draw_word(struct canvas panel, unsigned char* ascii_word, int x, int y) {
+void draw_word_with_bound(struct canvas panel, unsigned char* ascii_word, int x, int y, int maxX, int maxY, enum align a) {
+    // TODO maybe we could make assert in a function like assert_panel(struct panel)
     assert(panel.map);
+    maxX = maxX < 0 ? panel.width - 1 : maxX;
+    maxY = maxY < 0 ? panel.height - 1 : maxY;
+    int fromX = x;
+    
+    // Well, to a good answer from a question, you should begin with a bad answer --- Pa.Zheng
+    int last_font_width = 5;
+    int last_font_height = 7;
+
     char* p = ascii_word;
+    int word_len = strlen(p);
     while (*p) {
-	int offset = draw_ascii(panel, *p, x, y) + 1;
-	assert(offset);
-	x += offset;
+	if (x + last_font_width >= maxX) {
+	    if (y + last_font_height > maxY) {
+		// warning it is going to explode
+		// draw a dot dot dot
+		struct sprite w = getDotDotDot();
+		draw_sprite_with_bound(panel, w, x, y, maxX, maxY, a);
+		sprite_free(w);
+		break;
+	    }
+	}
+	if (x + last_font_width > maxX) {
+	    x = fromX;
+	    y += last_font_height + 1;
+	}
+	if (y > maxY) {
+	    // Like an old Chinese saying: not force to back sky
+	    break;
+	}
+	// TODO generate again and again, reduce it.
+	struct sprite w = getAsciiWord(*p);
+	draw_sprite_with_bound(panel, w, x, y, maxX, maxY, a);
+	x += w.width + 1;
+	last_font_width = w.width;
+	last_font_height = w.height;
 	p++;
+	sprite_free(w);
     }
 }
 
@@ -90,7 +115,7 @@ unsigned char only_at_position(int startBit) {
     }
 }
 
-void c_mem_copy(unsigned char* source, unsigned char* target, int sourceStartBit, int targetStartBit, int bitLen) {
+void bit_mem_copy(unsigned char* source, unsigned char* target, int sourceStartBit, int targetStartBit, int bitLen) {
     assert(source);
     assert(target);
     // bitlen is 128 at most, so it is ok to copy by bit
@@ -119,8 +144,14 @@ void c_mem_copy(unsigned char* source, unsigned char* target, int sourceStartBit
 }
 
 void draw_sprite(struct canvas panel, struct sprite s, int x, int y) {
+    draw_sprite_with_bound(panel, s, x, y, -1, -1, LEFT);
+}
+
+void draw_sprite_with_bound(struct canvas panel, struct sprite s, int x, int y, int maxX, int maxY, enum align a) {
     assert(panel.map);
     assert(s.data);
+    maxX = maxX < 0 ? panel.width - 1 : maxX;
+    maxY = maxY < 0 ? panel.height - 1 : maxY;
     int h;
     int bit_offset = 0;
     unsigned char *target = panel.map;
@@ -131,9 +162,9 @@ void draw_sprite(struct canvas panel, struct sprite s, int x, int y) {
 	xMod8 = x % panel.bitwise,
 	col_in_row = panel.width / panel.bitwise,
 	target_start_index = x % panel.bitwise;
-    int copyBitLen = s.width;
-    if (panel.width - x < s.width) {
-	copyBitLen = panel.width - x;
+    int copyBitLen = s.width; // copy at most in one line
+    if (maxX - x < s.width) {
+	copyBitLen = maxX - x;
     }
 #if DEBUG
     int r;
@@ -142,11 +173,11 @@ void draw_sprite(struct canvas panel, struct sprite s, int x, int y) {
     }
 #endif
     for (h = 0; h < s.height; h++, y++) {
-	if (y >= panel.height) break;
+	if (y > maxY) break;
 	target_position = col_in_row * y + x / panel.bitwise;
 	source_position = (s.width * h) / 8;
 	source_start_index = (s.width * h) % 8;
-	c_mem_copy(source+source_position, target+target_position, source_start_index, target_start_index, copyBitLen);
+	bit_mem_copy(source+source_position, target+target_position, source_start_index, target_start_index, copyBitLen);
     }
 #if DEBUG
     print_canvas(panel);
