@@ -38,7 +38,7 @@ void game_draw_frame(struct canvas panel) {
 	break;
     case frame_one:
 	if (!m_state.inited) {
-	    game_frame_init();
+	    game_frame_init(panel);
 	    m_state.inited = 0x1;
 	}
 	draw_game_frame(panel);

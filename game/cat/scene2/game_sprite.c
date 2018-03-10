@@ -6,36 +6,44 @@
 #include <string.h>
 #include <stdlib.h>
 
-struct plane_sprite plane;
-/*
-struct plane_sprite {
-    struct sprite normal;
-    struct sprite crash1;
-    struct sprite crash2;
-    struct sprite crash3;
-};
-struct sprite {
-    int width; // in pixel.
-    int height; // in pixel.
-    unsigned char *data;
-};
-*/
+struct sprite bird;
+struct sprite fruit;
+
+void bird_init() {
+    unsigned char bird_data[] = {
+	0x0C, 0x4A, 0x7F, 0x90, 0x18, 0x00,
+	0x00 // addition
+    };
+    int width = 8, height = 5;
+    sprite_init(&bird, width, height, bird_data); 
+}
+
+void fruit_init() {
+    unsigned char fruit_data[] = {
+	0x8A, 0xBE, 0xE2, 0x00,
+	0x00 // addition
+    };
+    int width = 5, height = 5;
+    sprite_init(&fruit, width, height, fruit_data);
+}
 
 void game_sprite_init() {
-    unsigned char plane_normal_data[] = {
-	0xCF,0x0,0x0
-    };
-    plane.normal.width = 3;
-    plane.normal.height = 3;
-    int data_size = plane.normal.width * plane.normal.height / 8 + 1;
-    plane.normal.data = (unsigned char*)malloc(data_size);
-    memcpy(plane.normal.data, plane_normal_data, data_size);
+    bird_init();
+    fruit_init();
 }
 
 void game_sprite_free() {
-    sprite_free(plane.normal);
+    sprite_free(bird);
+    sprite_free(fruit);
 }
-void draw_plane(struct canvas panel, int x, int y) {
-    draw_sprite(panel, plane.normal, x, y);
+struct sprite get_bird() {
+    if (!bird.data)
+	bird_init();
+    return bird;
 }
 
+struct sprite get_fruit() {
+    if (!fruit.data)
+	fruit_init();
+    return fruit;
+}

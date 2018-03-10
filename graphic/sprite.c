@@ -1,5 +1,6 @@
-#include "stdlib.h"
-#include "string.h"
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 
 #include "sprite.h"
 
@@ -168,6 +169,17 @@ void generateLiu(struct sprite* s) {
     int data_size = s->width * s->height / 8 + 1;
     s->data = (unsigned char*) malloc(data_size *sizeof(unsigned char));
     memcpy(s->data, yinghuozhishen, data_size);
+}
+
+void sprite_init(struct sprite* s, int width, int height, unsigned char *data) {
+    assert(s);
+    assert(data);
+    s->width = width;
+    s->height = height;
+    int data_size = width * height / 8 + 1;
+    s->data = (unsigned char*) malloc(data_size);
+    assert(s->data);
+    memcpy(s->data, data, data_size);
 }
 
 void sprite_free(struct sprite s) {
