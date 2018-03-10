@@ -49,6 +49,9 @@ void welcome_frame_on_press(int btnType) {
     }
 }
 
+void welcome_frame_logic_process() {
+}
+
 void draw_welcome_frame(struct canvas panel) {
     // White frame
     draw_sprite(panel, frame_border_sprite, 0, 0);

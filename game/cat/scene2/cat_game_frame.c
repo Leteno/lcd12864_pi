@@ -48,11 +48,14 @@ void valid_game_object(struct game_object* o, struct canvas panel) {
     }
 }
 
-void draw_game_frame(struct canvas panel) {
+void game_frame_logic_process() {
     // step one: redraw the frame every time
     // step two: just repaint tiny part, see the efficency
     bird.y -= 1;
     map_moving_forward();
+}
+
+void draw_game_frame(struct canvas panel) {
     valid_game_object(&bird, panel);
     draw_map_to_canvas(panel);
     draw_sprite(panel, bird.sprite, bird.x, bird.y);

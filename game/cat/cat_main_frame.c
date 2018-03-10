@@ -28,11 +28,46 @@ void game_on_press(int btnType) {
 }
 
 void game_draw_frame(struct canvas panel);
+void game_logic_process(struct canvas panel);
 void game_process(struct canvas panel) {
     game_draw_frame(panel);
+    game_logic_process(panel);
 }
 
+int logic_counter = 0;
+int logic_time = 10;
+void game_logic_process(struct canvas panel) {
+    if (++logic_counter >= logic_time) {
+	logic_counter = 0;
+    } else {
+	return;
+    }
+    switch(m_state.state) {
+    case welcome:
+	if (!m_state.inited) {
+	    init_welcome_frame();
+	    m_state.inited = 0x1;
+	}
+	welcome_frame_logic_process();
+	break;
+    case frame_one:
+	if (!m_state.inited) {
+	    game_frame_init(panel);
+	    m_state.inited = 0x1;
+	}
+	game_frame_logic_process();
+	break;
+    }
+}
+
+int paint_counter = 0;
+int paint_max = 0;
 void game_draw_frame(struct canvas panel) {
+    if (++paint_counter >= paint_max) {
+	paint_counter = 0;
+    } else {
+	return;
+    }
     switch(m_state.state) {
     case welcome:
 	if (!m_state.inited) {
