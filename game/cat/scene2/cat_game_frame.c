@@ -1,6 +1,7 @@
 #include "cat_game_frame.h"
 #include "game_sprite.h"
 #include "game_object.h"
+#include "map.h"
 #include "../../../hardware/switch_util.h"
 #include "../../../graphic/graphic.h"
 
@@ -14,6 +15,7 @@ void game_frame_init(struct canvas panel) {
     fruit.sprite = get_fruit();
     fruit.x = 0;
     fruit.y = 0;
+    map_init(panel);
 }
 
 void game_frame_free() {
@@ -50,6 +52,8 @@ void draw_game_frame(struct canvas panel) {
     // step one: redraw the frame every time
     // step two: just repaint tiny part, see the efficency
     bird.y -= 1;
+    map_moving_forward();
     valid_game_object(&bird, panel);
+    draw_map_to_canvas(panel);
     draw_sprite(panel, bird.sprite, bird.x, bird.y);
 }

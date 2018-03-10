@@ -145,27 +145,36 @@ void _bit_mem_copy(unsigned char* source, unsigned char* target, int sourceStart
     }
 }
 
-void canvas_copy_bound(struct canvas source, struct point s_from, struct point s_to, struct canvas* target, struct point t_from) {
+void canvas_copy_bound(struct canvas source, struct point s_from, struct point s_to, struct canvas* target, struct point t_from, char is_infinit) {
     assert(source.map);
     assert(target);
     assert(target->map);
 
     // TODO s_from should be smaller than s_to
 
-    int t_rows = target->height - t_from.y;
     int s_rows = s_to.y - s_from.y;
     int s_columns = s_to.x - s_from.x;
-    int copy_bit_len = MIN(s_to.x - s_from.x, target->width - t_from.x);
     int r;
-    for (r = 0; r < s_rows, r < t_rows; r++) {
-	int t_p = t_from.x + (t_from.y + r) * target->width;
-	int s_p = s_from.x + (s_from.y + r) * source.width;
-	_bit_mem_copy(
-	    source.map + s_p / 8,
-	    target->map + t_p / 8,
-	    s_p % 8,
-	    t_p % 8,
-	    copy_bit_len);
+    for (r = 0; r < s_rows; r++) {
+	int t_row = (t_from.y + r) % target->height; // TODO
+	int left = s_to.x - s_from.x;
+	int t_from_x = t_from.x;
+	while (left > 0) {
+	    int copy_bit_len = MIN(left, target->width - t_from_x);
+	    int t_p = t_from.x + (t_from.y + r) * target->width;
+	    int s_p = s_from.x + (s_from.y + r) * source.width;
+	    _bit_mem_copy(
+		source.map + s_p / 8,
+		target->map + t_p / 8,
+		s_p % 8,
+		t_p % 8,
+		copy_bit_len);
+	    if (!is_infinit) {
+		break;
+	    }
+	    left -= copy_bit_len;
+	    t_from_x = 0;
+	}
     }
 }
 

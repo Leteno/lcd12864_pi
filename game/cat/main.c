@@ -37,7 +37,7 @@ void new_logic() {
 	    clear_canvas(panel);
 	    // game/cat/cat_main_frame.h
 	    game_on_press(getButton());
-	    game_draw_frame(panel);
+	    game_process(panel);
 	    draw_canvas(panel);
 	    ftime(&tp);
 	    last_millitm = last_millitm + T;

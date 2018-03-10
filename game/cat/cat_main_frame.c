@@ -27,6 +27,11 @@ void game_on_press(int btnType) {
     }
 }
 
+void game_draw_frame(struct canvas panel);
+void game_process(struct canvas panel) {
+    game_draw_frame(panel);
+}
+
 void game_draw_frame(struct canvas panel) {
     switch(m_state.state) {
     case welcome:
