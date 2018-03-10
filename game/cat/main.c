@@ -1,13 +1,13 @@
-#include "hardware/lcd12864_util.h"
-#include "hardware/switch_util.h"
-#include "graphic/graphic.h"
-#include "graphic/matrix.h"
-#include "game/cat/cat_main_frame.h"
+#include "../../hardware/lcd12864_util.h"
+#include "../../hardware/switch_util.h"
+#include "../../graphic/graphic.h"
+#include "../../graphic/matrix.h"
+#include "cat_main_frame.h"
 
 #include <stdio.h>
 #include <sys/timeb.h>
 
-#include "config/config.h"
+#include "../../config/config.h"
 void new_logic();
 void old_test();
 
@@ -21,8 +21,7 @@ void new_logic() {
     init_env();
     switch_util_setup();
     clear_graphic_mem();
-    struct canvas panel;
-    canvas_init(&panel);
+    struct canvas panel = canvas_init(LCD_WIDTH, LCD_HEIGHT);
 
     struct timeb tp;
     ftime(&tp);
@@ -59,8 +58,7 @@ void old_test() {
     printf("clear_graphic_mem\n");
     clear_graphic_mem();
     printf("canvas_init\n");
-    struct canvas panel;
-    canvas_init(&panel);
+    struct canvas panel = canvas_init(LCD_WIDTH, LCD_HEIGHT);
 
     printf("canvas width %d height %d bitwise %d\n", panel.width, panel.height, panel.bitwise);
 

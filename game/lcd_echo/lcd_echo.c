@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 int game_init() {
     init_env();
     clear_graphic_mem();
-    canvas_init(&panel);
+    panel = canvas_init(LCD_WIDTH, LCD_HEIGHT);
 
     return 0;
 }

@@ -1,6 +1,9 @@
 #ifndef LCD12864_UTIL_H
 #define LCD12864_UTIL_H
 
+#define LCD_WIDTH 128
+#define LCD_HEIGHT 64
+
 #define LCD_RS 4 //显示屏控制线
 #define LCD_RW 5
 #define LCD_EN 1
