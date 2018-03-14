@@ -7,11 +7,16 @@ cat_game_objects = game/cat/cat_main_frame.o game/cat/scene1/cat_welcome_frame.o
 
 lcd_echo_objects = game/lcd_echo/lcd_echo.o
 
+fresh_rate_objects = game/fresh_rate_check/main.o
+
 cat: $(basic_objects) $(cat_game_objects)
 	$(CC) -o cat $(basic_objects) $(cat_game_objects) -lwiringPi
 
 lcd_echo: $(basic_objects) $(lcd_echo_objects)
 	$(CC) -o lcd_echo $(basic_objects) $(lcd_echo_objects) -lwiringPi
+
+fresh_rate_check: $(fresh_rate_objects)
+	$(CC) -o fresh_rate $(basic_objects) $(fresh_rate_objects) -lwiringPi
 
 $(cat_game_objects): $(basic_objects)
 $(lcd_echo_objects): $(basic_objects)
