@@ -68,6 +68,7 @@ void game_draw_frame(struct canvas panel) {
     } else {
 	return;
     }
+    clear_canvas(panel);
     switch(m_state.state) {
     case welcome:
 	if (!m_state.inited) {

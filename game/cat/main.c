@@ -27,24 +27,25 @@ void new_logic() {
     ftime(&tp);
     int last_time = tp.time;
     int last_millitm = tp.millitm;
-    int T = 1000/24;
+    int T = 1000/60;
 
     game_init();
     for (;;) {
 	ftime(&tp);
 	// current_time = {time}.{millitm}, such as 1234.200
-	if ((tp.time - last_time) * 1000 + (tp.millitm - last_millitm) > T) {
-	    clear_canvas(panel);
+	int duration = (tp.time - last_time) * 1000 + (tp.millitm - last_millitm);
+	if (duration > T) {
 	    // game/cat/cat_main_frame.h
 	    game_on_press(getButton());
 	    game_process(panel);
+
+	    // the bottle neck
+	    // 32 - 17 = 15 ms to excute this function.
 	    draw_canvas(panel);
-	    ftime(&tp);
-	    last_millitm = last_millitm + T;
-	    if (last_millitm >= 1000) {
-		last_millitm -= 1000;
-		last_time += 1;
-	    }
+
+	    printf("duration: %d, fps: %5.2f\n", duration, 1000.0f / duration);
+	    last_time = tp.time;
+	    last_millitm = tp.millitm;
 	}
     }
     game_free();
