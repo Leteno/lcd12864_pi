@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "../hardware/lcd12864_util.h"
 #include "matrix.h"
 #include "graphic.h"
 
@@ -13,7 +14,7 @@ void matrix_init(struct matrix* m) {
     m->panel = (struct canvas*) malloc(FRAME_SIZE_IN_MATRIX * sizeof(struct canvas));
     int i;
     for (i = 0; i < FRAME_SIZE_IN_MATRIX; i++) {
-	canvas_init(m->panel + i);
+	m->panel[i] = canvas_init(LCD_WIDTH, LCD_HEIGHT);
     }
 }
 
