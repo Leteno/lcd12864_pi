@@ -1,15 +1,16 @@
-
 #include <wiringPi.h>
 #include "lcd12864_util.h"
+#include <stdio.h>
 
 void write_on_data_bus(unsigned char data) {
+    /*
     int t[8];
     int f=0,i=0,d=data;
 
     //进制转换
     for(i=0;i<8;i++){
-	t[i]= data % 2; // TODO   use & >> instead
-	data= data / 2;
+	t[i] = data & 0x1;
+	data = data >> 1;
     }
 
     //输出
@@ -21,6 +22,15 @@ void write_on_data_bus(unsigned char data) {
     digitalWrite(D6,t[5]);
     digitalWrite(D7,t[6]);
     digitalWrite(D8,t[7]);
+    */
+    digitalWrite(D1,data & 0x1);
+    digitalWrite(D2,data & 0x2);
+    digitalWrite(D3,data & 0x4);
+    digitalWrite(D4,data & 0x8);
+    digitalWrite(D5,data & 0x10);
+    digitalWrite(D6,data & 0x20);
+    digitalWrite(D7,data & 0x40);
+    digitalWrite(D8,data & 0x80);
 }
 
 void init_env() {
@@ -48,7 +58,10 @@ void busy_check() {
     digitalWrite(LCD_EN,1);
     write_on_data_bus(0xff);
     pinMode(D8, INPUT);
+
+    // This one slow down the speed.
     while(digitalRead(D8));
+
     pinMode(D8, OUTPUT);
     digitalWrite(LCD_EN,0);
 }
