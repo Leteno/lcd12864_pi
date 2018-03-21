@@ -101,7 +101,7 @@ public class Cheese extends Panel {
 	}
 
 	firstTime = true;
-	buffer.append("reverse: \n");
+	buffer.append("\nreverse: \n");
 	for (int ch : result) {
 	    ch = ~ch & 0xFF;
 	    if (!firstTime) buffer.append(", ");
