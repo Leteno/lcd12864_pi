@@ -5,8 +5,14 @@
 #include "../../../hardware/switch_util.h"
 #include "../../../graphic/graphic.h"
 
+#include <sys/timeb.h>
+
 struct game_object bird;
 struct game_object fruit;
+
+struct timeb first_time;
+struct timeb last_time;
+
 void game_frame_init(struct canvas panel) {
     game_sprite_init();
     bird.sprite = get_bird();
@@ -16,6 +22,8 @@ void game_frame_init(struct canvas panel) {
     fruit.x = 0;
     fruit.y = 0;
     map_init(panel);
+    ftime(&first_time);
+    last_time = first_time;
 }
 
 void game_frame_free() {
@@ -51,8 +59,13 @@ void valid_game_object(struct game_object* o, struct canvas panel) {
 void game_frame_logic_process() {
     // step one: redraw the frame every time
     // step two: just repaint tiny part, see the efficency
-    bird.y -= 1;
-    map_moving_forward();
+    struct timeb current_time;
+    ftime(&current_time);
+    int elapse0 = (current_time.time - first_time.time) * 1000 + (current_time.millitm - first_time.millitm);
+    int elapse1 = (current_time.time - last_time.time) * 1000 + (current_time.millitm - last_time.millitm);
+
+    bird.y -= (int)(elapse1 * 0.06);
+    map_moving_forward(elapse0);
 }
 
 void draw_game_frame(struct canvas panel) {

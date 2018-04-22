@@ -54,7 +54,7 @@ void new_logic() {
     ftime(&tp);
     int last_time = tp.time;
     int last_millitm = tp.millitm;
-    int T = 1000/60;
+    int T = 1000/24;
 
     game_init();
     for (;;) {

@@ -21,10 +21,10 @@ void map_init(struct canvas canvas) {
     }
 }
 
-void map_moving_forward() {
-    offset += 5;
+void map_moving_forward(int elapse) {
+    offset = (int)(elapse * 0.3);
     if (offset > map_canvas.width) {
-	offset -= map_canvas.width;
+	offset = offset % map_canvas.width;
     }
 }
 
