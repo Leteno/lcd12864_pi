@@ -34,7 +34,7 @@ void push_matrix(struct matrix* m, struct canvas panel) {
     assert(m->panel);
     assert(panel.map);
     // copy
-    canvas_copy(&panel, m->panel + m->index);
+    canvas_copy(panel, m->panel + m->index);
 
     m->index++;
     if (m->index >= FRAME_SIZE_IN_MATRIX) {
@@ -52,7 +52,7 @@ void pop_matrix(struct matrix* m, struct canvas *panel) {
 	m->index = FRAME_SIZE_IN_MATRIX - 1;
     }
 
-    canvas_copy(m->panel + m->index, panel);
+    canvas_copy(*(m->panel + m->index), panel);
 }
 
 void matrix_test(struct canvas *pPanel) {

@@ -48,14 +48,13 @@ void print_canvas(struct canvas panel) {
     }
 }
 
-void canvas_copy(struct canvas *source, struct canvas *target) {
-    assert(source);
-    assert(source->map);
+void canvas_copy(struct canvas source, struct canvas *target) {
+    assert(source.map);
     assert(target);
 
-    target->width = source->width;
-    target->height = source->height;
-    target->bitwise = source->bitwise;
+    target->width = source.width;
+    target->height = source.height;
+    target->bitwise = source.bitwise;
 
     int map_size = target->width * target->height / target->bitwise;
     if (!target->map) {
@@ -65,7 +64,7 @@ void canvas_copy(struct canvas *source, struct canvas *target) {
 	    target->map[i] = 0x0;
 	}
     }
-    memcpy(target->map, source->map, map_size);
+    memcpy(target->map, source.map, map_size);
 }
 
 // TODO use a better function, this one will cost at least 21 operation per bit
