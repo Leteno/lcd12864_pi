@@ -4,6 +4,8 @@
 #include "../../graphic/matrix.h"
 #include "cat_main_frame.h"
 
+#include <assert.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <sys/timeb.h>
 
@@ -17,11 +19,36 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+void* draw(void* arg) {
+    assert(arg);
+    struct canvas* panel = arg;
+    struct timeb tp;
+    ftime(&tp);
+    int last_time = tp.time;
+    int last_millitm = tp.millitm;
+    int T = 1000/60;
+
+    for (;;) {
+	ftime(&tp);
+	// current_time = {time}.{millitm}, such as 1234.200
+	int duration = (tp.time - last_time) * 1000 + (tp.millitm - last_millitm);
+	if (duration > T) {
+	    // the bottle neck
+	    // 32 - 17 = 15 ms to excute this function.
+	    draw_canvas(*panel);
+	}
+    }
+}
+
 void new_logic() {
     init_env();
     switch_util_setup();
     clear_graphic_mem();
-    struct canvas panel = canvas_init(LCD_WIDTH, LCD_HEIGHT);
+    struct canvas main_panel = canvas_init(LCD_WIDTH, LCD_HEIGHT);
+    struct canvas second_panel = canvas_init(LCD_WIDTH, LCD_HEIGHT);
+
+    pthread_t tid;
+    pthread_create(&tid, NULL, draw, &main_panel);
 
     struct timeb tp;
     ftime(&tp);
@@ -37,11 +64,9 @@ void new_logic() {
 	if (duration > T) {
 	    // game/cat/cat_main_frame.h
 	    game_on_press(getButton());
-	    game_process(panel);
-
-	    // the bottle neck
-	    // 32 - 17 = 15 ms to excute this function.
-	    draw_canvas(panel);
+	    game_process(second_panel);
+	    // add mutex
+	    canvas_copy(second_panel, &main_panel);
 
 	    printf("duration: %d, fps: %5.2f\n", duration, 1000.0f / duration);
 	    last_time = tp.time;
@@ -50,7 +75,8 @@ void new_logic() {
     }
     game_free();
 
-    canvas_free(panel);
+    canvas_free(main_panel);
+    canvas_free(second_panel);
 }
 
 void old_test() {

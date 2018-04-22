@@ -14,7 +14,7 @@ lcd_echo_objects = game/lcd_echo/lcd_echo.o
 fresh_rate_objects = game/fresh_rate_check/main.o
 
 cat: $(basic_objects) $(cat_game_objects)
-	$(CC) -o cat $(basic_objects) $(cat_game_objects) -lwiringPi
+	$(CC) -o cat $(basic_objects) $(cat_game_objects) -lwiringPi -lpthread
 
 lcd_echo: $(basic_objects) $(lcd_echo_objects)
 	$(CC) -o lcd_echo $(basic_objects) $(lcd_echo_objects) -lwiringPi
