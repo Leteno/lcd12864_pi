@@ -22,19 +22,47 @@ void set_pixel(struct canvas panel, int x, int y, int on) {
 }
 
 void draw_word(struct canvas panel, unsigned char* ascii_word, int x, int y) {
-    draw_word_with_bound(panel, ascii_word, x, y, -1, -1, LEFT);
+    draw_word_with_bound(panel, ascii_word, x, y, -1, -1, A_LEFT);
 }
 
-void draw_word_with_bound(struct canvas panel, unsigned char* ascii_word, int x, int y, int maxX, int maxY, enum align a) {
+void draw_word_with_bound(struct canvas panel, unsigned char* ascii_word, int x, int y, int maxX, int maxY, int align) {
     // TODO maybe we could make assert in a function like assert_panel(struct panel)
     assert(panel.map);
     maxX = maxX < 0 ? panel.width - 1 : maxX;
     maxY = maxY < 0 ? panel.height - 1 : maxY;
+
+
+    int font_width = 5, font_height = 7, width_gap = 1, height_gap = 1;
+    int len = strlen(ascii_word);
+    { // calculation for alignment
+	int area_width = maxX - x;
+	int area_height = maxY - y;
+
+	int w = len * (font_width + width_gap);
+	int posible_lines = w / area_width + 1;
+	int left_width = w > area_width ? 0 : area_width - w;
+	int left_height = area_height - posible_lines * (font_height + height_gap);
+	if (left_height < 0) left_height = 0;
+
+	if (align & A_LEFT) {
+	} else if (align & A_RIGHT) {
+	    x = x + left_width;
+	} else if (align & A_CENTER) {
+	    x = x + left_width / 2;
+	}
+
+	if (align & A_TOP) {
+	} else if (align & A_BOTTOM) {
+	    y = y + left_height;
+	} else if (align & A_CENTER) {
+	    y = y + left_height / 2;
+	}
+    }
     int fromX = x;
     
     // Well, to a good answer from a question, you should begin with a bad answer --- Pa.Zheng
-    int last_font_width = 5;
-    int last_font_height = 7;
+    int last_font_width = font_width;
+    int last_font_height = font_height;
 
     char* p = ascii_word;
     int word_len = strlen(p);
@@ -44,14 +72,14 @@ void draw_word_with_bound(struct canvas panel, unsigned char* ascii_word, int x,
 		// warning it is going to explode
 		// draw a dot dot dot
 		struct sprite w = getDotDotDot();
-		draw_sprite_with_bound(panel, w, x, y, maxX, maxY, a);
+		draw_sprite_with_bound(panel, w, x, y, maxX, maxY, align);
 		sprite_free(w);
 		break;
 	    }
 	}
 	if (x + last_font_width > maxX) {
 	    x = fromX;
-	    y += last_font_height + 1;
+	    y += last_font_height + height_gap;
 	}
 	if (y > maxY) {
 	    // Like an old Chinese saying: not force to back sky
@@ -59,8 +87,8 @@ void draw_word_with_bound(struct canvas panel, unsigned char* ascii_word, int x,
 	}
 	// TODO generate again and again, reduce it.
 	struct sprite w = getAsciiWord(*p);
-	draw_sprite_with_bound(panel, w, x, y, maxX, maxY, a);
-	x += w.width + 1;
+	draw_sprite_with_bound(panel, w, x, y, maxX, maxY, align);
+	x += w.width + width_gap;
 	last_font_width = w.width;
 	last_font_height = w.height;
 	p++;
@@ -144,10 +172,10 @@ void bit_mem_copy(unsigned char* source, unsigned char* target, int sourceStartB
 }
 
 void draw_sprite(struct canvas panel, struct sprite s, int x, int y) {
-    draw_sprite_with_bound(panel, s, x, y, -1, -1, LEFT);
+    draw_sprite_with_bound(panel, s, x, y, -1, -1, A_LEFT);
 }
 
-void draw_sprite_with_bound(struct canvas panel, struct sprite s, int x, int y, int maxX, int maxY, enum align a) {
+void draw_sprite_with_bound(struct canvas panel, struct sprite s, int x, int y, int maxX, int maxY, int align) {
     assert(panel.map);
     assert(s.data);
     maxX = maxX < 0 ? panel.width - 1 : maxX;

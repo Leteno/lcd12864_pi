@@ -18,7 +18,7 @@ void clear_canvas(struct canvas panel);
 
 void print_canvas(struct canvas panel);
 
-void canvas_copy_bound(struct canvas source, struct point s_from, struct point s_to, struct canvas* target, struct point t_from, char is_infinit);
+void canvas_copy_bound(struct canvas source, struct point s_from, struct point s_to, struct canvas target, struct point t_from, char is_infinit);
 
 void canvas_copy(struct canvas source, struct canvas *target);
 

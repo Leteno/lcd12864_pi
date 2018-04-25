@@ -4,8 +4,8 @@
 #include <unistd.h>
 
 #include "../hardware/lcd12864_util.h"
-#include "matrix.h"
 #include "graphic.h"
+#include "matrix.h"
 
 #define FRAME_SIZE_IN_MATRIX 10
 

@@ -45,7 +45,7 @@ void draw_map_to_canvas(struct canvas canvas) {
 	map_canvas,
 	s_from,
 	s_to,
-	&canvas,
+	canvas,
 	t_from,
 	0x0
 	);
