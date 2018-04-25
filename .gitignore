@@ -9,4 +9,6 @@ cat
 !cat/
 lcd_echo
 !lcd_echo/
+clock
+!clock/
 fresh_rate
