@@ -21,6 +21,8 @@ void draw_sprite(struct canvas panel, struct sprite s, int x, int y);
 
 void draw_sprite_with_bound(struct canvas panel, struct sprite s, int x, int y, int maxX, int maxY, int align);
 
+void draw_straight_line(struct canvas panel, int startX, int startY, int endX, int endY);
+
 void draw_sprite_test(struct canvas panel);
 
 void draw_canvas(struct canvas panel);

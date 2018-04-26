@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
     struct label clock = create_label("12:00:00", 80, 10, A_CENTER);
     struct label weather = create_label("", 80, 10, A_RIGHT);
     struct label pm25 = create_label("", 80, 10, A_RIGHT);
-    struct label hit_me = create_label("", 40, 10, A_LEFT);
+    struct label hit_me = create_label("", 48, 13, A_CENTER);
 
     add_label(frame, name, 0, 0);
 
@@ -74,16 +74,17 @@ void* update_pm25(void* pm25_label) {
 
     struct label* label = pm25_label;
     set_label_text(label, result);
-    add_label(frame, *label, 48, 50);
+    add_label(frame, *label, 48, 52);
 }
 
 void* show_hit_me(void* hit_me_label) {
     struct label* phit_me = hit_me_label;
     int show_hit_me = 0x0;
     while(1) {
+	set_label_border(phit_me, show_hit_me, 0);
 	set_label_text(phit_me, show_hit_me ? "hit_me": "");
 	show_hit_me = !show_hit_me;
-	add_label(frame, *phit_me, 10, 50);
+	add_label(frame, *phit_me, 6, 50);
 	sleep(1);
     }
 }

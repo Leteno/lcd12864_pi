@@ -212,6 +212,15 @@ void draw_sprite_with_bound(struct canvas panel, struct sprite s, int x, int y, 
 #endif
 }
 
+void draw_straight_line(struct canvas panel, int startX, int startY, int endX, int endY) {
+    int x, y;
+    for (x = startX; x <= endX; x++) {
+	for (y = startY; y <= endY; y++) {
+	    set_pixel(panel, x, y, 1); // actually we can improve it, by copy in bytes not bits
+	}
+    }
+}
+
 void draw_sprite_test(struct canvas panel) {
     assert(panel.map);
 
