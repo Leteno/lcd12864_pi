@@ -15,7 +15,7 @@ lcd_echo_objects = game/lcd_echo/lcd_echo.o
 
 fresh_rate_objects = game/fresh_rate_check/main.o
 
-clock_objects = game/clock/clock.o
+clock_objects = game/clock/clock.o game/clock/get_weather.o
 
 cat: $(basic_objects) $(cat_game_objects)
 	$(CC) -o cat $(basic_objects) $(cat_game_objects) -lwiringPi -lpthread
@@ -27,7 +27,7 @@ fresh_rate_check: $(fresh_rate_objects)
 	$(CC) -o fresh_rate $(basic_objects) $(fresh_rate_objects) -lwiringPi
 
 clock: $(basic_objects) $(widget_objects) $(clock_objects)
-	$(CC) -o clock $(basic_objects) $(widget_objects) $(clock_objects) -lwiringPi
+	$(CC) -o clock $(basic_objects) $(widget_objects) $(clock_objects) -lwiringPi -lpthread
 
 $(widget_objects): $(basic_objects)
 $(cat_game_objects): $(basic_objects)

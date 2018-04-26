@@ -25,6 +25,7 @@ void set_label_text(struct label* label, char* new_text) {
     if (label->data) {
 	origin_len = strlen(label->data);
     }
+    label->data = new_text;
     if (origin_len > strlen(new_text)) {
 	clear_canvas(label->canvas);
     }
