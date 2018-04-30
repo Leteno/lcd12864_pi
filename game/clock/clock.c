@@ -54,27 +54,37 @@ int main(int argc, char** argv) {
 }
 
 void* update_weather(void* weather_label) {
-    char max_tmp[10];
-    get_max_tmp(max_tmp, 10);
-    char min_tmp[10];
-    get_min_tmp(min_tmp, 10);
+    for (;;) {
+	char max_tmp[10];
+	get_max_tmp(max_tmp, 10);
+	char min_tmp[10];
+	get_min_tmp(min_tmp, 10);
 
-    char result[1024];
-    sprintf(result, "%s-%s'C", min_tmp, max_tmp);
-    struct label* label = weather_label;
-    set_label_text(label, result);
-    add_label(frame, *label, 48, 40);
+	char result[1024];
+	sprintf(result, "%s-%s'C", min_tmp, max_tmp);
+	struct label* label = weather_label;
+	set_label_text(label, result);
+	add_label(frame, *label, 48, 40);
+
+	int _30_mins = 30 * 60;
+	sleep(_30_mins);
+    }
 }
 
 void* update_pm25(void* pm25_label) {
-    char pm_25[10];
-    get_pm25(pm_25, 10);
-    char result[1024];
-    sprintf(result, "Pm2.5: %03s\0", pm_25);
+    for (;;) {
+	char pm_25[10];
+	get_pm25(pm_25, 10);
+	char result[1024];
+	sprintf(result, "Pm2.5: %03s\0", pm_25);
 
-    struct label* label = pm25_label;
-    set_label_text(label, result);
-    add_label(frame, *label, 48, 52);
+	struct label* label = pm25_label;
+	set_label_text(label, result);
+	add_label(frame, *label, 48, 52);
+
+	int _30_mins = 30 * 60;
+	sleep(_30_mins);
+    }
 }
 
 void* show_hit_me(void* hit_me_label) {
