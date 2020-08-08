@@ -6,6 +6,12 @@ What You can do:
 1. show Your Picture in LCD12864: you can generate the dot matrix by [G.java](customize_tools/bitmap_generater/G.java) and show it. Like this:
 ![yinghuozhishen](res/amuse_jiangjia.jpeg)
 
+2. weather thing:
+
+   ![weather gif](res/weather.gif)
+
+
+
 Wiring thing
 [LED12864](res/12864-line.png)
 [switch](res/switch_line.png)
